@@ -1,4 +1,4 @@
-# Learn It Right Way
+# Three Tier Architecture
 This project is a full-stack web application built using React js for the frontend, Express js for the backend, and MySQL as the database. The application is designed to demonstrate the implementation of a 3-tier architecture, where the presentation layer (React js), application logic layer (Express js), and data layer (MySQL) are separated into distinct tiers.
 
 
@@ -117,7 +117,7 @@ git — version
 
 #### Clone repository
 ```bash
-git clone https://github.com/learnItRightWay01/react-node-mysql-app.git
+git clone https://github.com/suneelprojects/react-node-mysql-app.git
 ```
 
 #### Install node.js
@@ -286,7 +286,7 @@ sudo yum install -y nodejs
 sudo npm install -g pm2 
 
 # Define variables 
-REPO_URL="https://github.com/learnItRightWay01/react-node-mysql-app.git" 
+REPO_URL="https://github.com/suneelprojects/react-node-mysql-app.git" 
 BRANCH_NAME="feature/add-logging" 
 REPO_DIR="/home/ec2-user/react-node-mysql-app/backend" 
 ENV_FILE="$REPO_DIR/.env" 
@@ -377,7 +377,7 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
 
 # Define variables
-REPO_URL="https://github.com/learnItRightWay01/react-node-mysql-app.git"
+REPO_URL="https://github.com/suneelprojects/react-node-mysql-app.git"
 BRANCH_NAME="feature/add-logging"
 REPO_DIR="/home/ec2-user/react-node-mysql-app/frontend"
 ENV_FILE="$REPO_DIR/.env"
