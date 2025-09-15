@@ -220,12 +220,12 @@ systemctl enable nginx
 #### Install NGINX
 For Auto Scalling groups
 
-#!/bin/bash
-# ----------------------------------------
-# EC2 User Data Script: NGINX Setup with Metadata Display
-# Designed for Auto Scaling Group deployments
-# ----------------------------------------
+## EC2 User Data Script: NGINX Setup with Metadata Display
 
+Designed for Auto Scaling Group deployments.
+
+```bash
+#!/bin/bash
 # Update system packages
 sudo yum update -y
 
@@ -253,7 +253,6 @@ PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
 # Create HTML page with instance details
 sudo bash -c "cat > /usr/share/nginx/html/index.html <<EOF
 <html>
-  <head><title>EC2 Instance Info</title></head>
   <body>
     <h1>Instance ID: $INSTANCE_ID</h1>
     <h2>Availability Zone: $AVAILABILITY_ZONE</h2>
@@ -262,5 +261,6 @@ sudo bash -c "cat > /usr/share/nginx/html/index.html <<EOF
 </html>
 EOF"
 
-# Restart NGINX to apply changes
+# Restart NGINX
 sudo systemctl restart nginx
+```
