@@ -215,3 +215,36 @@ echo "Welcome to Presentation Tier EC2 instance in Availability Zone B." > /usr/
 systemctl start nginx 
 systemctl enable nginx
 ```
+
+## User data scripts
+#### Install NGINX
+For Auto Scalling groups
+
+#!/bin/bash
+# Update the package list and install NGINX
+sudo yum update -y
+sudo yum install nginx -y
+
+# Start and enable NGINX
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Fetch metadata token (IMDSv2)
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+
+# Fetch instance details
+INSTANCE_ID=`curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id"`
+AVAILABILITY_ZONE=`curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/placement/availability-zone"`
+PUBLIC_IP=`curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-ipv4"`
+
+# Create a simple HTML page displaying instance details
+sudo bash -c "cat > /usr/share/nginx/html/index.html <<EOF
+<html><body>
+<h1>Instance ID: $INSTANCE_ID</h1>
+<h2>Availability Zone: $AVAILABILITY_ZONE</h2>
+<h2>Public IP: $PUBLIC_IP</h2>
+</body></html>
+EOF"
+
+# Restart NGINX to apply changes
+sudo systemctl restart nginx
