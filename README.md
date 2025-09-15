@@ -221,29 +221,45 @@ systemctl enable nginx
 For Auto Scalling groups
 
 #!/bin/bash
-# Update the package list and install NGINX
+# ----------------------------------------
+# EC2 User Data Script: NGINX Setup with Metadata Display
+# Designed for Auto Scaling Group deployments
+# ----------------------------------------
+
+# Update system packages
 sudo yum update -y
+
+# Install NGINX
 sudo yum install nginx -y
 
-# Start and enable NGINX
+# Start and enable NGINX service
 sudo systemctl start nginx
 sudo systemctl enable nginx
 
-# Fetch metadata token (IMDSv2)
-TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+# Fetch IMDSv2 token
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 
-# Fetch instance details
-INSTANCE_ID=`curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/instance-id"`
-AVAILABILITY_ZONE=`curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/placement/availability-zone"`
-PUBLIC_IP=`curl -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-ipv4"`
+# Retrieve instance metadata
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/instance-id)
 
-# Create a simple HTML page displaying instance details
+AVAILABILITY_ZONE=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/placement/availability-zone)
+
+PUBLIC_IP=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/public-ipv4)
+
+# Create HTML page with instance details
 sudo bash -c "cat > /usr/share/nginx/html/index.html <<EOF
-<html><body>
-<h1>Instance ID: $INSTANCE_ID</h1>
-<h2>Availability Zone: $AVAILABILITY_ZONE</h2>
-<h2>Public IP: $PUBLIC_IP</h2>
-</body></html>
+<html>
+  <head><title>EC2 Instance Info</title></head>
+  <body>
+    <h1>Instance ID: $INSTANCE_ID</h1>
+    <h2>Availability Zone: $AVAILABILITY_ZONE</h2>
+    <h2>Public IP: $PUBLIC_IP</h2>
+  </body>
+</html>
 EOF"
 
 # Restart NGINX to apply changes
